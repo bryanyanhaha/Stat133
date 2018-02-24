@@ -1,0 +1,256 @@
+---
+title: "HW01-Bryan-Yan"
+author: "Bryan"
+date: "February 23, 2018"
+output:  github_document
+--- 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# set the working disk to offline github repository
+setwd("/Users/shuai/Stat133/hw-stat133/hw01")
+library("readr")
+
+
+#2)
+column_name <- c(
+  'symboling',
+  'normalized_losses',
+  'make',
+  'fuel_type',
+  'aspiration',
+  'num_of_doors',
+  'body_style',
+  'drive_wheels',
+  'engine_location',
+  'wheel_base',
+  'length',
+  'width',
+  'height',
+  'curb_weight',
+  'engine_type',
+  'num_of_cylinders',
+  'engine_size',
+  'fuel_system',
+  'bore',
+  'stroke',
+  'compression_ratio',
+  'horsepower',
+  'peak_rpm',
+  'city_mpg',
+  'highway_mpg',
+  'price'
+  )
+
+
+column_types <- c(
+  'double',
+  'character',
+  'character',
+  'character',
+  'character',
+  'character',
+  'character',
+  'character',
+  'character',
+  'double',
+  'double',
+  'double',
+  'double',
+  'integer',
+  'character',
+  'character',
+  'integer',
+  'character',
+  'double',
+  'double',
+  'double',
+  'integer',
+  'integer',
+  'integer',
+  'integer',
+  'integer'
+  
+)
+#Follow the specifications listed above, import the data using the read.csv() function, and also display the structure with str()
+a <- read.csv("imports-85.data", na = "?", col.names = column_name, colClasses = column_types)
+names(a) <- column_name
+str(a)
+
+
+#Follow the specifications listed above, import the data using the read_csv() function, and also display the structure with str()
+a_2 <- read_csv('imports-85.data',na = "?", col_names = column_name, col_types= "ddcccccccddddiccicdddiiiii")
+str(a_2)
+  
+  
+
+
+```
+
+3) 
+```{r}
+read.csv ('imports-85.data', header = FALSE)
+
+```
+
+a. When I simply invoke read.csv('imports-85.data'), the first row will become the column names.
+
+b. When I simply invoke read.csv('imports-85.data', header = FALSE), Rstudio will automatically generate column names for each column starting from V1, V2, V3.....
+
+c. I won't be able to read the table because the data  within each column need to be the same type. The code will return an sacn error because "?" is not any type of data.
+
+d. Because the information of data type of each data requires extra memory.
+
+e. All orginal types of data in the dataframe will become character data.
+
+```{r}
+#Histogram of price with colored bars
+hist(a$price,main = "Price", col=c("blue","red","green"))
+
+#boxplot of horsepower in horizontal orientation
+boxplot(a$horsepower, horizontal = TRUE)
+
+#barplot of the frequencies of body_style, arranged in decreasing order
+library(dplyr)
+k <- factor(a$body_style)
+q <- data.frame(table(k))
+arrange(q,desc(Freq))
+
+#stars() plot of vehicles with turbo aspiration, using only variables wheel-base, length,width, height and price
+h <- select(
+  filter(a,aspiration =="turbo"),
+  wheel_base,length,width,height,price
+)
+stars(h)
+```
+
+5)
+
+
+```{r}
+#a.the mean price of the fuel_type gas cars
+l <- slice(a[a$fuel_type =="gas", ],-c(9,44,45,117))
+mean(l$price)
+#12913.19
+
+#the mena price of fuel_type disel cars
+p <- filter(a[a$fuel_type =="diesel", ], price > 0)
+mean(p$price)
+#15838.15
+
+#b. what is the make of the car with twelve num_of_cylinders
+a$make[a$num_of_cylinders =="twelve"]
+#"jaguar"
+
+#c. what is the make that has the most diesel cars
+
+
+r <- data.frame(table(a$make[a$fuel_type=="diesel"]))
+r$Var1[which.max(r$Freq)]
+#peugot
+
+#d. what is the price of the car with the largest amount of horsepower
+a$price[which.max(a$horsepower)]
+#NA
+
+#e. what is bottom 10th percentile of city_mpg
+quantile(a$city_mpg,  0.1)
+#17
+
+#f. what is the top 10th percentile of highway_mpg
+quantile(a$highway_mpg,  0.9)
+#38
+
+#g. what is the median price of those cars in the bottom 10th percentile of city_mpg
+
+median(a$price[a$city_mpg <= a$city_mpg[quantile(a$city_mpg,  0.1)]])
+#36440
+
+
+```
+
+6)
+a. The code would return NULL
+
+b. mtcars[ , mpg]
+
+c. Because columns are represented by numbers. The first column is 1, the second one is 2 and so on. There is no column represented by mpg.
+
+d. Yes, as long as the length of the list is the same as the number of rows of the data frame.
+
+e. The dataframe becomes a list and all columns become elements of the list.
+
+f. use as.data.frame()
+
+7)
+```{r}
+
+
+library(corrplot)
+qua<- column_name[column_types == "integer" | column_types == "double"]
+qua<- qua[3:length(qua)]
+qdat <- na.omit(a[, qua])
+cor1 <- cor(na.omit(a[, qua]))
+cor1
+
+corrplot(cor1, method="number")
+corrplot(cor1, method="color")
+
+#the values and patterns seem to de symmetric with respect to top left to bottom right diagonal
+
+```
+
+8)
+
+```{r}
+
+#8.1 Run PCA
+pca_prcomp <- prcomp(qdat, scale. = TRUE)
+names(pca_prcomp)
+pca_prcomp
+
+
+eigenvalues <- pca_prcomp$sdev^2
+eigenvalues
+
+
+eigs <- eigenvalues
+eigs_perc <- 100*eigs/sum(eigs)
+eigs_cum <- cumsum(eigs_perc)
+eigs_df <- data.frame(
+  eigs=eigs,
+  perc=eigs_perc,
+  'cumulative perc'= eigs_cum
+)
+  print(round(eigs_df, 4), print.gap = 2)
+
+  
+  
+
+
+percent <- eigenvalues/sum(eigenvalues)
+percent
+
+sum(percent[c(1,2,3)])
+
+#8.2) PCA plot of vehicles, and PCA plot of variables
+#use the first two components to graph a scatter plot
+plot(pca_prcomp$x, type= "n",las = 1)
+abline(h = 0, v = 0)
+points(pca_prcomp$x[ ,1], pca_prcomp$x[ ,2], pch = 19)
+
+
+#use the first two loadings to graph the variables
+pca_princomp <- princomp(qdat,cor=TRUE)
+plot(pca_princomp$loadings[ , c(1,2)])
+abline(h = 0, v= 0 )
+
+#concise description
+#variables in the first plot seem to be possitively correlated while the second plot does not show any correlation at all
+
+```
+
+
