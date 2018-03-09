@@ -1,0 +1,156 @@
+---
+title: "HW02"
+author: "Bryan"
+date: "March 9, 2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.path = 'hw-stat133/hw02/images/')
+```
+
+5.1)
+
+library(dplyr)
+
+```{r}
+#total numer of shots by player,arranged in descending order
+arrange(
+  summarise(
+    group_by(a,name),
+    totalshots = length(shot_type),
+  desc(totalshots)
+  ))
+
+```
+5.2)
+
+```{r}
+
+#effective shooting % by player
+arrange(
+  summarise(
+    group_by(a,name),
+    totalshots = length(shot_type),
+    made = sum(shot_made_flag == "made shot"),
+    percent_made = made/ totalshots),
+  desc(percent_made)
+  )
+
+
+#effective shooting % by player: 2pt field goal
+
+arrange(
+  summarise(
+    group_by(filter(a, shot_type == "2PT Field Goal"),name),
+    total2pt = length(shot_type),
+    made = sum(shot_made_flag == "made shot"),
+    percent_made = made/ total2pt),
+  desc(percent_made)
+  )
+
+#effective shooting $ by player: 3pt field goal
+
+arrange(
+  summarise(
+    group_by(filter(a, shot_type == "3PT Field Goal"),name),
+    total3pt = length(shot_type),
+    made = sum(shot_made_flag == "made shot"),
+    percent_made = made/ total3pt),
+  desc(percent_made)
+  )
+```
+
+
+6.1)
+
+
+```{r}
+
+#dplyr table
+
+k <- select(
+    arrange(
+  summarise(
+    group_by(a,shot_distance),
+    total= length(shot_type),
+    made = sum(shot_made_flag == "made shot"),
+    made_shot_prop = made/ total)),
+    shot_distance,made_shot_prop)
+
+k
+#6.2)
+
+#make a scatterplot with the table and answer questions
+
+ggplot(data = k) + geom_point(aes(x=shot_distance, y=made_shot_prop))
+
+
+```
+
+a. 
+It seems that when the distance is between 0 and 5, there is a negative relation between shot_distance and made_shot_prop, however, when the distance is larger than 5, it seems that the two variables are not related.
+
+b. 
+I can only confim that the claim is true when the distance is small than 5.
+
+c. 
+around 35
+
+d. 
+between 0 and 5
+
+
+
+7)
+```{r}
+# create a facetted graph of hte total number of shots by minute of occurrence
+
+
+cu <- summarise(
+  group_by(curry, minute),
+  total= length(shot_made_flag),name = "Stephen Curry"
+  )
+
+ig <- summarise(
+  group_by(igudala, minute),
+  total= length(shot_made_flag),name = "Andre Iguodala"
+  )
+
+du <- summarise(
+  group_by(durant, minute),
+  total= length(shot_made_flag),name = "Kevin Durant"
+  )
+
+th <- summarise(
+  group_by(thompson, minute),
+  total= length(shot_made_flag),name = "Klay Thompson"
+  )
+
+gr <- summarise(
+  group_by(green, minute),
+  total= length(shot_made_flag),name = "Draymond Green"
+  )
+
+h <- rbind(cu,ig,du,th,gr)
+
+
+
+
+
+plot <- ggplot(data = h ) + geom_point(aes(x= minute, y=total, color="blue"))+facet_wrap(~ name)+geom_path(aes(x= minute, y=total))+geom_rect(xmin=0,xmax=12,ymin=0,ymax=80,alpha= 0.01)+theme_minimal()+geom_rect(xmin=24,xmax=36,ymin=0,ymax=80,alpha= 0.01)+scale_x_continuous()+ggtitle("Total number of shots (by minute of occurrence)")
+plot + ylab("total number of shots")
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
