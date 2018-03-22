@@ -1,0 +1,110 @@
+---
+title: "HW03"
+author: "Bryan"
+date: "March 21, 2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, fig.path = 'images/')
+```
+
+```
+# 2.1) write a pipeline to obtain the unique team names
+
+ cut -d "," -f 2 nba2017-roster.csv | tail +2 | sort | uniq  > team-names.txt
+ 
+head -5 team-names.txt
+
+```
+
+```
+#2.2) write a pipeline to obtain the unique positions
+
+ cut -d "," -f 3 nba2017-roster.csv | tail +2 | sort -u > position-names.txt
+
+
+head -5 position-names.txt
+
+```
+
+```
+#2.3) write a pipeline to obtain the counts of the different experience values
+
+cut -d "," -f 7 nba2017-roster.csv | tail +2 | sort -n | uniq -c > experience-counts.txt
+
+head -5 experience-counts.txt
+
+```
+
+```
+#2.4) use output redirection commands to create a csv file LAC.csv for the LAC team
+
+grep -e LAC -e team nba2017-roster.csv > LAC.csv
+
+
+```
+
+```
+#display the age frequencies of LAL players
+
+grep "LAL" nba2017-roster.csv | cut -d "," -f 6 | sort | uniq -c
+
+```
+
+```
+#2.6) write a pipeline to find the numer of players in CLE
+
+grep "CLE" nba2017-roster.csv| wc -l
+
+```
+
+```
+#2.7) write pipelines to create a csv file gsw-height-weight.csv
+
+grep -e GSW -e player -e height -e weight nba2017-roster.csv | cut -d "," -f 1,4,5 > gsw-height-weight.csv
+
+cat gsw-height-weight.csv
+
+```
+
+
+```
+#2.8)write pipelines to create a file top10-salaries.csv
+
+grep -e player -e salary nba2017-roster.csv | cut -d "," -f 1,8 > top10-salaries.csv
+cut -d "," -f 1,8 nba2017-roster.csv | sort -t "," -k 2nr -k 1r | head -n 10 >> top10-salaries.csv
+
+cat top10-salaries.csv
+```
+
+```{r}
+source("code/binomial-functions.R")
+
+#find out the probability of getting exactly 3 sixes
+bin_probability(n = 10, k = 3, p = 1/6)
+
+#to obtain the distribution of sixes and plot it
+result <- bin_distribution(n = 10, p = 0.25)
+result
+barplot(result[[2]], names.arg = result[[1]], 
+        xlab = "number of success",
+        ylab = "binomial probability",
+        main = "probability distribution ")
+
+#obtain the probability of getting more than 3 heads using a biased coin
+result <- 0
+for (i in 4:5){
+  result <- result + bin_probability(n = 5, k = i, p = 0.35)
+}
+result
+
+#obtain the distribution
+result <- bin_distribution(n = 15, p = 0.35)
+result
+barplot(result[[2]], names.arg = result[[1]], 
+        xlab = "number of success",
+        ylab = "binomial probability",
+        main = "probability distribution ")
+```
+
