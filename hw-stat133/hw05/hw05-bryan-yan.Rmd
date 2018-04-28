@@ -17,34 +17,33 @@ library(dieroller)
 
 ```{r}
 # create a fair die:
-fair_die <- die()
+fair<- die()
 
 # let the game begin
 set.seed(123)
 game_time <- 1000
 game_result <- data.frame()
-for (i in 1:game_time) {
-  temp_result <- roll(fair_die, times = 4)$rolls
-  has_6 <- sum(6 == temp_result) > 0
-  temp_result <- c(temp_result, has_6)
-  game_result <- rbind(game_result, temp_result)
+for (i in 1:game_time) 
+  
+  {  a <- roll(fair, times = 4)$rolls
+  has_6 <- sum(6 == a) > 0
+  a <- c(a, has_6)
+  game_result <- rbind(game_result, a)
 }
 colnames(game_result) <- c("1st die", "2nd die", "3rd die", "4th die", "has_6")
 
-# first 10 games of the total 1000 games:
-head(game_result, 10)
+head(game_result, 5)
 ```
 
 analysis part:
 ```{r}
-# count the number of games in which there is at least one 6:
+# count the number of games
 sum(game_result$has_6)
-```
 
-```{r}
-# compute the relative frequency of getting at least one “6”
+# compute the relative frequency 
 sum(game_result$has_6) / game_time
 ```
+
 
 
 ## Problem II
@@ -55,30 +54,29 @@ set.seed(123)
 game_time <- 1000
 game_result <- data.frame()
 for (i in 1:game_time) {
-  temp_result <- roll(fair_die, times = 48)$rolls
+  b <- roll(fair, times = 48)$rolls
   pair_result <- vector(mode = "numeric", length = 0L)
   for (j in 1:24){
-    pair_sum <- temp_result[2*j - 1] + temp_result[2*j]
+    pair_sum <- b[2*j - 1] + b[2*j]
     pair_result <- c(pair_result, pair_sum)
   }
   has_2_6 <- sum(12 == pair_result) > 0
-  temp_result <- c(temp_result, has_2_6)
+  b <- c(b, has_2_6)
   
-  game_result <- rbind(game_result, temp_result)
+  game_result <- rbind(game_result, b)
 }
 colnames(game_result) <- c(rep(c("die1", "die2"), 24), "has_double_6")
 
-# first 10 games of the total 1000 games:
-head(game_result, 10)
+
+head(game_result, 5)
 ```
 
 analysis part:
 ```{r}
 # count the number of games 
 sum(game_result$has_double_6)
-```
-
-```{r}
 # compute the relative frequency 
 sum(game_result$has_double_6) / game_time
 ```
+
+
