@@ -1,0 +1,6 @@
+"0","# count the number of games in which there is at least one 6:"
+"0","sum(game_result$has_6)"
+"1","[1]"
+"1"," 527"
+"1","
+"

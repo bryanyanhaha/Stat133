@@ -1,0 +1,6 @@
+"0","# compute the relative frequency of getting at least one â6â"
+"0","sum(game_result$has_6) / game_time"
+"1","[1]"
+"1"," 0.527"
+"1","
+"

@@ -1,0 +1,84 @@
+---
+title: "Hw05"
+author: "Bryan"
+date: "April 27, 2018"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dieroller)
+```
+
+##problem1
+
+```{r}
+# create a fair die:
+fair_die <- die()
+
+# let the game begin
+set.seed(123)
+game_time <- 1000
+game_result <- data.frame()
+for (i in 1:game_time) {
+  temp_result <- roll(fair_die, times = 4)$rolls
+  has_6 <- sum(6 == temp_result) > 0
+  temp_result <- c(temp_result, has_6)
+  game_result <- rbind(game_result, temp_result)
+}
+colnames(game_result) <- c("1st die", "2nd die", "3rd die", "4th die", "has_6")
+
+# first 10 games of the total 1000 games:
+head(game_result, 10)
+```
+
+analysis part:
+```{r}
+# count the number of games in which there is at least one 6:
+sum(game_result$has_6)
+```
+
+```{r}
+# compute the relative frequency of getting at least one â6â
+sum(game_result$has_6) / game_time
+```
+
+
+## Problem II
+
+
+```{r}
+set.seed(123)
+game_time <- 1000
+game_result <- data.frame()
+for (i in 1:game_time) {
+  temp_result <- roll(fair_die, times = 48)$rolls
+  pair_result <- vector(mode = "numeric", length = 0L)
+  for (j in 1:24){
+    pair_sum <- temp_result[2*j - 1] + temp_result[2*j]
+    pair_result <- c(pair_result, pair_sum)
+  }
+  has_2_6 <- sum(12 == pair_result) > 0
+  temp_result <- c(temp_result, has_2_6)
+  
+  game_result <- rbind(game_result, temp_result)
+}
+colnames(game_result) <- c(rep(c("die1", "die2"), 24), "has_double_6")
+
+# first 10 games of the total 1000 games:
+head(game_result, 10)
+```
+
+analysis part:
+```{r}
+# count the number of games 
+sum(game_result$has_double_6)
+```
+
+```{r}
+# compute the relative frequency 
+sum(game_result$has_double_6) / game_time
+```

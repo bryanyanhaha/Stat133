@@ -1,0 +1,6 @@
+"0","# compute the relative frequency "
+"0","sum(game_result$has_double_6) / game_time"
+"1","[1]"
+"1"," 0.461"
+"1","
+"

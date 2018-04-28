@@ -1,0 +1,6 @@
+"0","# count the number of games "
+"0","sum(game_result$has_double_6)"
+"1","[1]"
+"1"," 461"
+"1","
+"

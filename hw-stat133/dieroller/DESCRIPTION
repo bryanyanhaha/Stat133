@@ -1,0 +1,10 @@
+Package: dieroller
+Title: roll_dies
+Version: 0.0.0.9000
+Authors@R: person("Bryan","Yan", email="shuaibyyz@berkeley.edu", role=c("aut","cre"))
+Description: helps users to deal with die rolling problems
+Depends: R (>= 3.4.3)
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
